@@ -1,0 +1,4 @@
+flask
+request
+paho-mqtt
+google-cloud-firestore
