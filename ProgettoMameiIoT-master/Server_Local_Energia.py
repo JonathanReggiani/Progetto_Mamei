@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 data = {}
 diz = {}
 
-def on_connectE(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc):
     mqtt_client.subscribe(default_topicE)
 
 def on_message(client, userdata, message):
@@ -30,11 +30,11 @@ client_id = 'c1'
 broker_ip = 'broker.emqx.io'
 broker_port = 1883
 
-default_topicE = 'ProgettoMameiIoT/energia/sensor/#'
+default_topicE = 'ProgettoMameiIoT/energia/sensors/#'
 
 mqtt_client = mqtt.Client(f'ProgettoMameiIoT-{client_id}')
 mqtt_client.on_message = on_message
-mqtt_client.on_connect = on_connectE
+mqtt_client.on_connect = on_connect
 print('connect',broker_ip, broker_port)
 mqtt_client.connect(broker_ip, broker_port, keepalive=60)
 print("connected")

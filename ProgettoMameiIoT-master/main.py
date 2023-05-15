@@ -117,7 +117,3 @@ with open(csvEnergia) as f:
 
 
 mqtt_client.loop_stop()
-
-# chiusura della connessione al broker MQTT
-mqtt_client.disconnect()
-print("Chiusura della connessione al broker MQTT")

@@ -4,6 +4,9 @@ from google.cloud import firestore
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required, UserMixin
 from secret import secret_key
 
+
+db = firestore.Client.from_service_account_json('credentials.json')
+
 class User(UserMixin):
     def __init__(self, username):
         super().__init__()
@@ -53,6 +56,16 @@ def add_data(s):
         doc_ref.set({'values':[val]})
     return 'ok',200
 
+
+'''# creazione di un entity (document)
+id = 'ciao'
+doc_ref = db.collection(coll).document(id) #id can be omitted
+doc_ref.set({'nome':'sensor','value': [{'val':1}]})
+print(doc_ref.get().id)
+
+# accesso a un documento specifico (dato l'id)
+entity = db.collection(coll).document(id).get()
+print(entity.id,'--->',entity.to_dict()['nome'])'''
 
 @app.route('/sensors/<s>',methods=['GET'])
 def get_data(s):
