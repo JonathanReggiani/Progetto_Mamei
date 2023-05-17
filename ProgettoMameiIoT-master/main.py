@@ -8,6 +8,7 @@ from base64 import b64decode
 #from secret import secret_key
 import paho.mqtt.client as mqtt
 import time
+from requests import get, post
 
 #Variabili da impostare
 filePath = "C:\\Users\\Jonathan\Desktop\Csv" #!!!! to modify
@@ -64,6 +65,7 @@ mqtt_client = mqtt.Client(f'ProgettoMameiIoT-{sensor}')
 #mqtt_client.on_connect = on_connect
 mqtt_client.connect(broker_ip, portaMosquito)
 mqtt_client.loop_start()
+
 
 # apertura del file data e invio dei dati al server
 print("Inizio csv Potenza")

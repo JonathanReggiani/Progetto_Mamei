@@ -22,13 +22,13 @@ login = LoginManager(app)
 login.login_view = '/static/login.html'
 
 
-@login.user_loader
+'''@login.user_loader
 def load_user(username):
     db = firestore.Client.from_service_account_json('Credentials.json') if local else firestore.Client()
     user = db.collection('utenti').document(username).get()
     if user.exists:
         return User(username)
-    return None
+    return None'''
 
 @app.route('/',methods=['GET','POST'])
 @app.route('/main',methods=['GET','POST'])

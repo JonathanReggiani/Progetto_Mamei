@@ -18,7 +18,8 @@ login = LoginManager(app)
 login.login_view = '/static/login.html'
 
 usersdb = {
-    'marco':'mamei'
+    'marco':'mamei',
+    'jacopina':'zanoni'
 }
 
 @login.user_loader
