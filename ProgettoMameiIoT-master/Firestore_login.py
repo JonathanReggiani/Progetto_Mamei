@@ -21,14 +21,13 @@ local = True
 login = LoginManager(app)
 login.login_view = '/static/login.html'
 
-
-'''@login.user_loader
+@login.user_loader
 def load_user(username):
     db = firestore.Client.from_service_account_json('Credentials.json') if local else firestore.Client()
     user = db.collection('utenti').document(username).get()
     if user.exists:
         return User(username)
-    return None'''
+    return None
 
 @app.route('/',methods=['GET','POST'])
 @app.route('/main',methods=['GET','POST'])
@@ -76,7 +75,7 @@ def get_data(s):
     else:
         return 'sensor not found',404
 
-'''@app.route('/graph/<s>',methods=['GET'])
+@app.route('/graph/<s>',methods=['GET'])
 @login_required
 def graph_data(s):
     db = firestore.Client.from_service_account_json('Credentials.json') if local else firestore.Client()
@@ -90,7 +89,7 @@ def graph_data(s):
             t+=1
         return render_template('graph.html',sensor=s,data=json.dumps(d))
     else:
-        return redirect(url_for('static', filename='sensor404.html'))'''
+        return redirect(url_for('static', filename='sensor404.html'))
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -116,7 +115,7 @@ def logout():
     return redirect('/')
 
 
-'''@app.route('/adduser', methods=['GET','POST'])
+@app.route('/adduser', methods=['GET','POST'])
 @login_required
 def adduser():
     if current_user.username == 'marco':
@@ -130,9 +129,8 @@ def adduser():
             user.set({'username':username,'password':password})
             return 'ok'
     else:
-        return redirect('/')'''
+        return redirect('/')
 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
-
