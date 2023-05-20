@@ -8,6 +8,7 @@ from base64 import b64decode
 #from secret import secret_key
 import paho.mqtt.client as mqtt
 import time
+from google.cloud import firestore
 from requests import get, post
 
 #Variabili da impostare
@@ -59,13 +60,11 @@ print(df1)
 df.to_csv(csvEnergia, index=False)
 df1.to_csv(csvPotenza, index=False)
 
-
 # connessione al broker MQTT
 mqtt_client = mqtt.Client(f'ProgettoMameiIoT-{sensor}')
 #mqtt_client.on_connect = on_connect
 mqtt_client.connect(broker_ip, portaMosquito)
 mqtt_client.loop_start()
-
 
 # apertura del file data e invio dei dati al server
 print("Inizio csv Potenza")
@@ -87,7 +86,7 @@ with open(csvPotenza) as f:
             infot = mqtt_client.publish(f'ProgettoMameiIoT/potenza/sensor/{sensor}', f'val={line.strip()}')
             infot.wait_for_publish()
             print('Message Sent: ' + line.strip())
-            time.sleep(3)
+            time.sleep(10)
         else:
             print("Saltiamo l'header")
             c+=1
@@ -115,7 +114,5 @@ with open(csvEnergia) as f:
         else:
             print("Saltiamo l'header")
             c+=1
-
-
 
 mqtt_client.loop_stop()

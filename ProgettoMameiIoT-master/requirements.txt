@@ -2,3 +2,4 @@ flask
 paho-mqtt
 google-cloud-firestore
 google
+flask-login

@@ -20,7 +20,7 @@ print(doc_ref.get().id)
 entity = db.collection(coll).document(id).get()
 print(entity.id,'--->',entity.to_dict()['nome'])
 
-'''
+
 # aggiungi un campo o modifica un campo esistente, se faccio di nuovo la set, sostituisco l'intero dizionario
 doc_ref.update({'value2':5})
 
@@ -47,8 +47,8 @@ for i in [1,2,3,4,5,6]:
     doc_ref = db.collection(coll).document()
     doc_ref.set({'nome':'sensor','value': i})
 
-print_coll()'''
-'''
+print_coll()
+
 # where queries
 print('Query')
 for doc in db.collection(coll).where('value','>',2).stream():
@@ -57,5 +57,4 @@ for doc in db.collection(coll).where('value','>',2).stream():
 for doc in db.collection(coll).stream():
     db.collection(coll).document(doc.id).delete()
 
-print_coll()'''
-
+print_coll()

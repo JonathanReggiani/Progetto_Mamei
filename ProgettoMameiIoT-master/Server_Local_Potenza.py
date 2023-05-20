@@ -7,7 +7,7 @@ import time
 from requests import get, post
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required, UserMixin
 from flask import Flask,request,render_template,redirect,url_for
-
+from datetime import datetime
 '''data = {}
 diz = {}'''
 
@@ -28,7 +28,9 @@ def on_message(client, userdata, message):
     #base_url = '34.154.51.140'
     #base_url = 'https://mamei-test2-382313.appspot.com'
     print('eseguo r')
-    r = post(f'{base_url}/sensors/{s}', data={ 'val': val})
+    r = post(f'{base_url}/sensors/{s}', data={'date':date, 'val':val})
+    #r1 = post(f'{base_url}/sensors/{s}', data={'val':val})
+    #info = {'colonna1':r, 'colonna2':r1}
     print('eseguito')
     time.sleep(1)
 
@@ -90,18 +92,61 @@ def main():
 
 @app.route('/sensors/<s>',methods=['POST'])
 def add_data(s):
+    date = request.values['date']
     val = float(request.values['val'])
-    #print('val',val)
-    print('sono in add data', val)
+    #val = request.values['val']
+    print('sono in add data date', date)
+    print('sono in add data val', val)
+    date_val = {'date':date, 'val':val}
     db = firestore.Client.from_service_account_json('Credentials.json')
     doc_ref = db.collection('sensors').document(s)
     entity = doc_ref.get()
-    if entity.exists and 'values' in entity.to_dict():
-        v = entity.to_dict()['values']
-        v.append(val)
-        doc_ref.update({'values':v})
+
+    #print(entity.to_dict()['values'][0]['date'])
+    #print(entity.to_dict()['values']['date'])
+    #print('ent to dict valu', entity.to_dict()['values'][0].keys())
+    last_date = ''
+    if entity.exists and 'date' in entity.to_dict():
+        #se frigorigero esiste e se ha una colonna data
+        #se esiste una data, me la sovrascrivi con l'ultimo valore
+        d = entity.to_dict()['date']
+        print('d', d)
+        if date not in d:
+            d.append(date)
+            print('d con append', d)
+            doc_ref.update({'date': d})
+            print('d update', d)
+            '''else:
+                doc_ref.set({'values': [date_val]})'''
+            d2 = date.to_dict()[date]
+            d2.append(v)
+            v = entity.to_dict()['val']
+            print('v', v)
+            v.append(val)
+            print('v con append', v)
+            doc_ref.update({'val': v})
+            print('v update', v)
     else:
-        doc_ref.set({'values':[val]})
+        #se frigorifero non esiste, aggiungimi tutto
+        doc_ref.set({'date': [date], 'val':[val]})
+    '''if entity.exists and 'values' in entity.to_dict():
+        ##found = False
+        for i in range(len(entity.to_dict()['values'])):
+            if date == entity.to_dict()['values'][i]['date']:
+                print('data in if', date)
+                print('dat ent', entity.to_dict()['values'][i]['date'])
+                found = True
+        if found == True:
+        v = entity.to_dict()['values']
+        print('v',v)
+        v.append(date_val)
+        print('v con append', v)
+        doc_ref.update({'values':v})
+        print('v update', v)
+        else:
+            doc_ref.set({'values': [date_val]})
+    else:
+        doc_ref.set({'values':[date_val]})'''
     return 'ok',200
 
 @app.route('/sensors/<s>',methods=['GET'])
@@ -125,10 +170,12 @@ def graph_data(s):
     if entity.exists:
         d = []
         d.append(['Number',s])
-        t = 0
-        for x in entity.to_dict()['values']:
-            d.append([t,x])
-            t+=1
+
+        for x in entity.to_dict().keys():
+            d.append([x, entity.to_dict()[x]])
+            print('x', x)
+            print('entity di x', entity.to_dict()[x])
+
         return render_template('graph.html',sensor=s,data=json.dumps(d))
     else:
         return redirect(url_for('static', filename='sensor404.html'))
