@@ -145,36 +145,33 @@ def add_data(s):
     documento_ref = db.collection('sensors').document(s)
     documento = documento_ref.get()
     print('Inizio rim dup: ', date)
-    if entity.exists and 'date_val' in entity.to_dict():
+    if entity.exists and 'potenza' in entity.to_dict():
         # se frigorigero esiste e se ha una colonna data
         # se esiste una data, me la sovrascrivi con l'ultimo valore
-        d = entity.to_dict()['date_val']
+        d = entity.to_dict()['potenza']
         print("d prima di rimuovere: ", d)
-        valore_da_rimuovere = remove_dup('sensors', s, 'date_val', date)
+        valore_da_rimuovere = remove_dup('sensors', s, 'potenza', date)
         if valore_da_rimuovere != '' and valore_da_rimuovere in d:
             d.remove(valore_da_rimuovere)
         print("d dopo di rimuovere: ", d)
         d.append(date_val)
         print('d con append', d)
-        doc_ref.update({'date_val': d})
+        doc_ref.update({'potenza': d})
     else:
         #se frigorifero non esiste, aggiungimi tutto
         print('Sono in SET')
-        doc_ref.set({'date_val':[date_val]})
+        doc_ref.set({'potenza':[date_val]})
         print('date_val in set: ', date_val)
     return 'ok',200
 
 @app.route('/sensors/<s>',methods=['GET'])
 def get_data(s):
-    print('scopami forte')
     db = firestore.Client.from_service_account_json('Credentials.json')
     entity = db.collection('sensors').document(s).get()
     print('entity', entity)
     if entity.exists:
-        print('bello mio')
-        return json.dumps(entity.to_dict()['date_val']), 200
+        return json.dumps(entity.to_dict()['potenza']), 200
     else:
-        print('sono fatto')
         return 'sensor not found', 404
 
 @app.route('/graph/<s>',methods=['GET'])
@@ -187,35 +184,41 @@ def graph_data(s):
         d.append(['Number',s])
         #x la data
         #y i valori
-        for x in entity.to_dict()['date_val']:
+        for x in entity.to_dict()['potenza']:
             d.append([x['date'], x['val']])
             print('x,y', (x['date'], x['val']))
             print('d', d)
-        return render_template('graph.html',sensor=s,data=json.dumps(d))
+        return render_template('graphhhhhhhh.html',sensor=s,data=json.dumps(d))
     else:
         return redirect(url_for('static', filename='sensor404.html'))
 
 @app.route('/login', methods=['POST'])
 def login():
     print('sono dentro il login')
-    if current_user.is_authenticated:
-        return redirect(url_for('/main'))
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated == True:
+        return redirect('/static/gia_loggato.html')
     username = request.values['u']
     password = request.values['p']
     db = firestore.Client.from_service_account_json('Credentials.json')
     user = db.collection('utenti').document(username).get()
     if user.exists and user.to_dict()['password']==password:
         login_user(User(username))
-        next_page = request.args.get('next')
+        next_page = request.args.get('/static/home.html')
         if not next_page:
-            next_page = '/main'
+            next_page = '/static/home.html'
         return redirect(next_page)
     return redirect('/static/login.html')
+
 @app.route('/logout')
 def logout():
     print('sono dentro il logout')
     logout_user()
     return redirect('/')
+
+@app.route('/home')
+def home():
+    return redirect('/static/home.html')
 
 @app.route('/adduser', methods=['GET','POST'])
 @login_required
@@ -229,7 +232,7 @@ def adduser():
             db = firestore.Client.from_service_account_json('Credentials.json')
             user = db.collection('utenti').document(username)
             user.set({'username':username,'password':password})
-            return 'ok'
+            return redirect('/static/utente_presente.html')
     else:
         return redirect('/')
 

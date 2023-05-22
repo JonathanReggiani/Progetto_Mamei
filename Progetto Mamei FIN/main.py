@@ -12,7 +12,7 @@ from google.cloud import firestore
 from requests import get, post
 
 #Variabili da impostare
-#filePath = "C:\\Users\\Francesco Mindoli\PycharmProjects\ProgettoMameiIoT" #!!!! to modify
+#filePath = "C:\\Users\\Francesco Mindoli\PycharmProjects\Progetto Mamei FIN" #!!!! to modify
 filePath = "C:\\Users\\Jonathan\Desktop\Csv"
 xlsEnergia = "Consumo di Energia_Storico.xls"
 xlsPotenza = "Potenza_Storico.xls"
@@ -73,15 +73,15 @@ c=0
 with open(csvPotenza) as f:
     for line in f:
         if (c > 0):
-            for i in range(5):
+            for i in range(2):
                 print(sensor, 'invio...', i)
                 infot = mqtt_client.publish(f'ProgettoMameiIoT/potenza/sensor/{sensor}', f'val={line.strip()}')
                 infot.wait_for_publish()
                 print('Message Sent: ' + line.strip())
-                if i == 4:
+                if i == 1:
                     time.sleep(10)
                 else:
-                    time.sleep(1)
+                    time.sleep(3)
         else:
             print("Saltiamo l'header")
             c+=1
@@ -90,15 +90,15 @@ c=0
 with open(csvEnergia) as f:
     for line in f:
         if(c>0):
-            for i in range(5):
+            for i in range(2):
                 print(sensor, 'invio...', i)
                 infot = mqtt_client.publish(f'ProgettoMameiIoT/energia/sensor/{sensor}', f'val={line.strip()}')
                 infot.wait_for_publish()
                 print('Message Sent: ' + line.strip())
-                if i == 4:
+                if i == 1:
                     time.sleep(10)
                 else:
-                    time.sleep(1)
+                    time.sleep(3)
         else:
             print("Saltiamo l'header")
             c += 1

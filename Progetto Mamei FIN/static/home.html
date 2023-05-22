@@ -95,6 +95,39 @@
       padding: 20px;
       color: #fff;
     }
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  .dropdown-content a {
+    color: #222;
+    background-color: #ffffff;
+    padding: 10px;
+    font-size: 16px;
+    text-decoration: none;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .dropdown-content a:hover {
+    background-color: #ccc;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
   </style>
 </head>
 <body>
@@ -103,13 +136,24 @@
   </header>
 
   <nav>
-    <ul>
-      <li><a href="#" style="background-color: #222;">Home</a></li>
-      <li><a href="login.html" style="background-color: #222;">Login</a></li>
-      <li><a href="#" style="background-color: #222;">Sensori</a></li>
-      <li><a href="#" style="background-color: #222;">Contatti</a></li>
-    </ul>
-  </nav>
+  <ul>
+    <li><a href="#" style="background-color: #222;">Home</a></li>
+    <li><a href="login.html" style="background-color: #222;">Login</a></li>
+    <li class="dropdown">
+      <a href="#" class="dropbtn" style="background-color: #222;">I tuoi dispositivi</a>
+      <div class="dropdown-content">
+        <a href="/graph/frigoriferoJZ">frigoriferoJZ</a>
+        <a href="#">Dispositivo 2</a>
+        <a href="#">Dispositivo 3</a>
+        <a href="#">Dispositivo 4</a>
+        <a href="#">Dispositivo 5</a>
+        <a href="#">Dispositivo 6</a>
+        <a href="#">Dispositivo 7</a>
+      </div>
+    </li>
+    <li><a href="#" style="background-color: #222;">Contatti</a></li>
+  </ul>
+</nav>
 
   <main>
     <section>
@@ -143,7 +187,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2023 La Pagina Fighissima. Tutti i diritti riservati.</p>
+    <p>&copy; 2023 Chase your energy. Tutti i diritti riservati.</p>
   </footer>
 </body>
 </html>

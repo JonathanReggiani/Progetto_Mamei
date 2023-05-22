@@ -86,7 +86,7 @@ def graph_data(s):
         for x in entity.to_dict()['values']:
             d.append([t,x])
             t+=1
-        return render_template('graph.html',sensor=s,data=json.dumps(d))
+        return render_template('frigoriferoJZ.html',sensor=s,data=json.dumps(d))
     else:
         return redirect(url_for('static', filename='sensor404.html'))
 
