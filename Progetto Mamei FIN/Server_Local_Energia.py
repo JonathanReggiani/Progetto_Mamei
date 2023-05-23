@@ -8,6 +8,7 @@ from requests import get, post
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required, UserMixin
 from flask import Flask,request,render_template,redirect,url_for
 from datetime import datetime
+import datetime
 
 def on_connectE(client, userdata, flags, rc):
     mqtt_client.subscribe(default_topicE)
@@ -180,17 +181,36 @@ def graph_data(s):
     db = firestore.Client.from_service_account_json('Credentials.json')
     entity = db.collection('sensors').document(s).get()
     if entity.exists:
-        d = []
-        d.append(['Number',s])
+        di = []
+        di.append(['Number',s])
         #x la data
         #y i valori
         for x in entity.to_dict()['energia']:
-            d.append([x['date'], x['val']])
+            di.append([x['date'], x['val']])
             print('x,y', (x['date'], x['val']))
-            print('d', d)
-        return render_template('graph.html',sensor=s,data=json.dumps(d))
+            print('d', di)
+        F1 = 0
+        F2 = 0
+        F3 = 0
+        for x in entity.to_dict()['energia']:
+            if int(x['date'].split(" ")[1].split(':')[0]) >= 8 and int(x['date'].split(" ")[1].split(':')[0]) < 19:
+                print(x['date'].split(" ")[1].split(':')[0])
+                F1+=x['val']
+            elif int(x['date'].split(" ")[1].split(':')[0]) >= 19 and int(x['date'].split(" ")[1].split(':')[0]) < 23:
+                F2+=x['val']
+            else:
+                F3+=x['val']
+        d1 = []
+        d1.append(['Number', s])
+        d1.append(['F1', F1])
+        d1.append(['F2', F2])
+        d1.append(['F3', F3])
+        print('d1------------------>', d1)
+
+        return render_template('graph.html',sensor=s,data=json.dumps(di), data2=json.dumps(d1))
     else:
         return redirect(url_for('static', filename='sensor404.html'))
+
 
 @app.route('/login', methods=['POST'])
 def login():

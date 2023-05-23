@@ -68,23 +68,6 @@ mqtt_client.connect(broker_ip, portaMosquito)
 mqtt_client.loop_start()
 
 # apertura del file data e invio dei dati al server
-print("Inizio csv Potenza")
-c=0
-with open(csvPotenza) as f:
-    for line in f:
-        if (c > 0):
-            for i in range(2):
-                print(sensor, 'invio...', i)
-                infot = mqtt_client.publish(f'ProgettoMameiIoT/potenza/sensor/{sensor}', f'val={line.strip()}')
-                infot.wait_for_publish()
-                print('Message Sent: ' + line.strip())
-                if i == 1:
-                    time.sleep(10)
-                else:
-                    time.sleep(3)
-        else:
-            print("Saltiamo l'header")
-            c+=1
 print("Inizio csv Energia")
 c=0
 with open(csvEnergia) as f:
@@ -102,5 +85,23 @@ with open(csvEnergia) as f:
         else:
             print("Saltiamo l'header")
             c += 1
+print("Inizio csv Potenza")
+c=0
+with open(csvPotenza) as f:
+    for line in f:
+        if (c > 0):
+            for i in range(2):
+                print(sensor, 'invio...', i)
+                infot = mqtt_client.publish(f'ProgettoMameiIoT/potenza/sensor/{sensor}', f'val={line.strip()}')
+                infot.wait_for_publish()
+                print('Message Sent: ' + line.strip())
+                if i == 1:
+                    time.sleep(10)
+                else:
+                    time.sleep(3)
+        else:
+            print("Saltiamo l'header")
+            c+=1
+
 
 mqtt_client.loop_stop()

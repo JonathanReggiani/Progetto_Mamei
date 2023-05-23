@@ -188,7 +188,7 @@ def graph_data(s):
             d.append([x['date'], x['val']])
             print('x,y', (x['date'], x['val']))
             print('d', d)
-        return render_template('graphhhhhhhh.html',sensor=s,data=json.dumps(d))
+        return render_template('graph.html',sensor=s,data=json.dumps(d))
     else:
         return redirect(url_for('static', filename='sensor404.html'))
 
