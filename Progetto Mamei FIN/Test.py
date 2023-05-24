@@ -24,7 +24,7 @@ if documento.exists:
 else:
     print("Il documento non esiste.")
 
-'''
+
 from google.cloud import firestore
 
 # Inizializza il client Firestore
@@ -80,4 +80,10 @@ if documento.exists:
     else:
         print(f"Il campo '{campo_da_modificare}' non è presente nel documento.")
 else:
-    print("Il documento non esiste.")
+    print("Il documento non esiste.")'''
+
+
+data_stringa = "23/10/2023 01:00:00"
+data = datetime.datetime.strptime(data_stringa, "%d/%m/%Y %H:%M:%S")
+giorno_settimana = data.strftime("%A")
+print(giorno_settimana)

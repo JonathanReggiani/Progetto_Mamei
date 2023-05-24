@@ -7,8 +7,12 @@ import time
 from requests import get, post
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required, UserMixin
 from flask import Flask,request,render_template,redirect,url_for
-from datetime import datetime
+#from datetime import datetime
 import datetime
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 def on_connectE(client, userdata, flags, rc):
     mqtt_client.subscribe(default_topicE)
@@ -187,19 +191,30 @@ def graph_data(s):
         #y i valori
         for x in entity.to_dict()['energia']:
             di.append([x['date'], x['val']])
-            print('x,y', (x['date'], x['val']))
-            print('d', di)
+            #print('x,y', (x['date'], x['val']))
+            #print('d', di)
         F1 = 0
         F2 = 0
         F3 = 0
         for x in entity.to_dict()['energia']:
-            if int(x['date'].split(" ")[1].split(':')[0]) >= 8 and int(x['date'].split(" ")[1].split(':')[0]) < 19:
-                print(x['date'].split(" ")[1].split(':')[0])
-                F1+=x['val']
-            elif int(x['date'].split(" ")[1].split(':')[0]) >= 19 and int(x['date'].split(" ")[1].split(':')[0]) < 23:
-                F2+=x['val']
+            hour = int(x['date'].split(" ")[1].split(':')[0])
+            day = datetime.datetime.strptime(x['date'], "%Y/%m/%d %H:%M:%S").strftime("%A").lower().strip()
+            #print('date', x['date'], 'day', day)
+            if day != 'saturday' and day!= 'sunday':
+                if hour >= 8 and hour < 19:
+                    #print(x['date'].split(" ")[1].split(':')[0])
+                    F1+=x['val']
+                elif hour >= 19 and hour < 23:
+                    F2+=x['val']
+                else:
+                    F3+=x['val']
+            elif day == 'saturday':
+                if hour>=7 and hour<=22:
+                    F2 += x['val']
+                else:
+                    F3 += x['val']
             else:
-                F3+=x['val']
+                F3 += x['val']
         d1 = []
         d1.append(['Number', s])
         d1.append(['F1', F1])
@@ -207,10 +222,83 @@ def graph_data(s):
         d1.append(['F3', F3])
         print('d1------------------>', d1)
 
-        return render_template('graph.html',sensor=s,data=json.dumps(di), data2=json.dumps(d1))
+        ####regressione####
+        # Dati di esempio: consumi storici
+        #anni = np.array([2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021])
+        #print(anni)
+        #consumi = np.array([10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38])
+
+        array_date = []
+        consumi = []
+        m = 0
+        for i in range(len(entity.to_dict()['energia'])):
+            array_date.append(i)
+            consumi.append(entity.to_dict()['energia'][i]['val'])
+            m=i
+
+        array_date = np.array(array_date).reshape(-1, 1)
+        print('Array DATE: ', array_date)
+        consumi = np.array(consumi)
+
+        # Creazione del modello di regressione lineare
+        modello = LinearRegression()
+
+        # Addestramento del modello
+        modello.fit(array_date, consumi)
+
+        # Determina l'ultima data presente nel dataset
+        ultimo_numero = m
+        ultima_data = entity.to_dict()['energia'][ultimo_numero]['date']
+
+        # Genera una sequenza di date per le 4 ore successive
+        numeri_futuri = np.arange(ultimo_numero+1, ultimo_numero+9).reshape(-1, 1)
+
+        # Calcola l'ora successiva all'ultima ora
+        #prossima_ora = datetime.datetime.fromordinal(ultima_data).replace(hour=datetime.datetime.fromordinal(ultima_data).hour + 1)
+        #prossima_ora = ultima_data + datetime.timedelta(hours=1)
+        ultima_data = datetime.datetime.strptime(entity.to_dict()['energia'][-1]['date'], '%Y/%m/%d %H:%M:%S')
+        prossima_ora = ultima_data + datetime.timedelta(hours=1)
+        # Genera una sequenza di date per le 4 ore successive
+        date_future = np.arange(prossima_ora.toordinal(), prossima_ora.toordinal() + 8).reshape(-1, 1)
+        print('DATE FUTUREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE',date_future)
+
+        # Prevedi i consumi per le date future
+        consumi_previsti = modello.predict(numeri_futuri)
+
+        # Stampa dei risultati
+        print("--------------------------------Consumi previsti:")
+        for dat, consumo in zip(numeri_futuri, consumi_previsti):
+            print(f"Data {dat}: {round(consumo, 2)}")
+
+        de = []
+        de.append(['Number', s])
+        # x la data
+        # y i valori
+
+        for x in entity.to_dict()['energia']:
+            de.append([x['date'], x['val']])
+            #print('x,y', (x['date'], x['val']))
+            #print('d', de)
+        for y in range(len(date_future)):
+            print('y', y)
+            print(date_future[y][0])
+            #print('y in data', datetime.datetime.fromordinal(date_future[y]))
+            de.append([str(datetime.datetime.fromordinal(date_future[y][0])), consumi_previsti[y]])
+            #print('x,y', (x['date'], x['val']))
+            #print('d', de)
+
+        # Plot dei risultati
+        plt.scatter(array_date, consumi, color='blue', label='Dati storici')
+        plt.plot(numeri_futuri, consumi_previsti, color='red', label='Previsione')
+        plt.xlabel('Data')
+        plt.ylabel('Consumi')
+        plt.title('Previsione dei consumi futuri')
+        plt.legend()
+        plt.show()
+
+        return render_template('graph.html',sensor=s,data=json.dumps(di), data2=json.dumps(d1), data3=json.dumps(de))
     else:
         return redirect(url_for('static', filename='sensor404.html'))
-
 
 @app.route('/login', methods=['POST'])
 def login():

@@ -197,6 +197,8 @@ google.charts.setOnLoadCallback(drawChart);
 function drawChart() {
 var data = google.visualization.arrayToDataTable({{data|safe}});
 var data2 = google.visualization.arrayToDataTable({{data2|safe}});
+var data3 = google.visualization.arrayToDataTable({{data3|safe}});
+
 var options = {
 hAxis: {
 title: 'Date',
@@ -209,7 +211,7 @@ vAxis: {minValue: 0, title: 'kWh'},
 curveType: 'function',
 legend: {position: 'none'},
 backgroundColor: '#f9f9f9',
-chartArea: {left: 50, top: 50, right: 20, bottom: 140},
+chartArea: {left: 60, top: 50, right: 20, bottom: 140},
 colors: ['#336fa8'],
 series: {
 0: {areaOpacity: 0.1}
@@ -243,8 +245,52 @@ hAxis: {
  };
  var chart2 = new google.visualization.ColumnChart(document.getElementById('chart_div2'));
  chart2.draw(data2, options2);
- }
 
+var options3 = {
+  hAxis: {
+    title: 'Date',
+    titleTextStyle: { color: '#333' },
+    textStyle: { fontSize: 12 }
+  },
+  vAxis: { minValue: 0, title: 'kWh' },
+  legend: { position: 'none' },
+  backgroundColor: '#f9f9f9',
+  chartArea: { left: 60, top: 50, right: 20, bottom: 140 },
+  bar: { groupWidth: '80%' },
+  titleTextStyle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff'
+  }
+};
+
+// Ottenere gli ultimi 8 punti dati
+var lastEightData = data3.getNumberOfRows() - 8;
+if (lastEightData < 0) {
+  lastEightData = 0;
+}
+
+var colors = ['#82c294', '#82c294', '#82c294', '#82c294', '#82c294', '#82c294', '#82c294', '#82c294']; // Array di colori per le ultime 8 barre
+
+var view = new google.visualization.DataView(data3);
+view.setColumns([0, 1, {
+  calc: function(dt, row) {
+    if (row >= lastEightData && row < lastEightData + 8) {
+      return colors[row - lastEightData];
+    } else {
+      return null;
+    }
+  },
+  type: 'string',
+  role: 'style'
+}]);
+
+var chart3 = new google.visualization.ColumnChart(document.getElementById('chart_div3'));
+chart3.draw(view, options3);
+
+
+
+ }
 
 setTimeout(function(){
 window.location.reload();

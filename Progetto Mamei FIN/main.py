@@ -14,9 +14,10 @@ from requests import get, post
 #Variabili da impostare
 #filePath = "C:\\Users\\Francesco Mindoli\PycharmProjects\Progetto Mamei FIN" #!!!! to modify
 filePath = "C:\\Users\\Jonathan\Desktop\Csv"
-xlsEnergia = "Consumo di Energia_Storico.xls"
+#xlsEnergia = "Consumo di Energia_Storico.xls"
+xlsEnergia = "Frigorifero_EnergiaFM.xls"
 xlsPotenza = "Potenza_Storico.xls"
-csvEnergia = filePath + "\Consumo di Energia_Storico.csv"
+csvEnergia = filePath + "\Frigorifero_EnergiaFM.csv"
 csvPotenza = filePath +  "\Potenza_Storico.csv"
 defaultTopicE = "/sensor/energia"
 defaultTopicP = "/sensor/potenza"

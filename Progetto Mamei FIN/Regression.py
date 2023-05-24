@@ -4,11 +4,12 @@ from sklearn.linear_model import LinearRegression
 
 # Dati di esempio: consumi storici
 anni = np.array([2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021])
+print(anni)
 consumi = np.array([10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38])
 
 # Trasformazione dei dati in un formato adatto per la regressione
 anni = anni.reshape(-1, 1) # Trasforma il vettore degli anni in una matrice colonna
-
+print(anni)
 # Creazione del modello di regressione lineare
 modello = LinearRegression()
 
