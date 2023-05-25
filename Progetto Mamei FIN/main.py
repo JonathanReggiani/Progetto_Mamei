@@ -80,29 +80,10 @@ with open(csvEnergia) as f:
                 infot.wait_for_publish()
                 print('Message Sent: ' + line.strip())
                 if i == 1:
-                    time.sleep(10)
+                    time.sleep(30)
                 else:
-                    time.sleep(3)
+                    time.sleep(15)
         else:
             print("Saltiamo l'header")
             c += 1
-print("Inizio csv Potenza")
-c=0
-with open(csvPotenza) as f:
-    for line in f:
-        if (c > 0):
-            for i in range(2):
-                print(sensor, 'invio...', i)
-                infot = mqtt_client.publish(f'ProgettoMameiIoT/potenza/sensor/{sensor}', f'val={line.strip()}')
-                infot.wait_for_publish()
-                print('Message Sent: ' + line.strip())
-                if i == 1:
-                    time.sleep(10)
-                else:
-                    time.sleep(3)
-        else:
-            print("Saltiamo l'header")
-            c+=1
-
-
 mqtt_client.loop_stop()

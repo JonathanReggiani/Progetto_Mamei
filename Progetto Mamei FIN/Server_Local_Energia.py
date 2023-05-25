@@ -7,13 +7,21 @@ import time
 from requests import get, post
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required, UserMixin
 from flask import Flask,request,render_template,redirect,url_for
-#from datetime import datetime
-import datetime
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from datetime import timedelta
+import datetime
+import tkinter as tk
+import tkinter as tk
+from tkinter import messagebox
+import threading
 
+
+
+
+prima_previsione = 0
 def on_connectE(client, userdata, flags, rc):
     mqtt_client.subscribe(default_topicE)
 
@@ -191,6 +199,7 @@ def graph_data(s):
         #y i valori
         for x in entity.to_dict()['energia']:
             di.append([x['date'], x['val']])
+            new_entry = x['val']
             #print('x,y', (x['date'], x['val']))
             #print('d', di)
         F1 = 0
@@ -230,6 +239,7 @@ def graph_data(s):
 
         array_date = []
         consumi = []
+        date_future = []
         m = 0
         for i in range(len(entity.to_dict()['energia'])):
             array_date.append(i)
@@ -256,19 +266,91 @@ def graph_data(s):
         # Calcola l'ora successiva all'ultima ora
         #prossima_ora = datetime.datetime.fromordinal(ultima_data).replace(hour=datetime.datetime.fromordinal(ultima_data).hour + 1)
         #prossima_ora = ultima_data + datetime.timedelta(hours=1)
-        ultima_data = datetime.datetime.strptime(entity.to_dict()['energia'][-1]['date'], '%Y/%m/%d %H:%M:%S')
-        prossima_ora = ultima_data + datetime.timedelta(hours=1)
+
+        def AggiungiOra(data):
+            #data = "2023/05/25 15:30:00"
+            formato_data = "%Y/%m/%d %H:%M:%S"
+
+            # Converti la stringa di data in un oggetto datetime
+            data_datetime = datetime.datetime.strptime(data, formato_data)
+
+            # Aggiungi un'ora all'oggetto datetime
+            data_avanti = data_datetime + datetime.timedelta(hours=1)
+
+            # Converti l'oggetto datetime risultante in una stringa nel formato desiderato
+            data_avanti_stringa = data_avanti.strftime(formato_data)
+
+            print(data_avanti_stringa)
+            return data_avanti_stringa
+
+        def show_custom_popup():
+            popup = tk.Toplevel()
+            popup.title("Pop-up Personalizzato")
+            popup.geometry("300x150")
+            label = tk.Label(popup, text="Questo è un pop-up personalizzato!", font=("Arial", 14))
+            label.pack(pady=20)
+            button = tk.Button(popup, text="Chiudi", command=popup.destroy)
+            button.pack()
+            # Solleva la finestra pop-up davanti a tutto
+            popup.lift()
+            popup.attributes("-topmost", True)
+            popup.mainloop()
+            # Funzione per eseguire il codice tkinter nel thread UI
+        def run_tkinter():
+            root = tk.Tk()
+            root.withdraw() # Nasconde la finestra principale
+            show_custom_popup()
+
+        # Esegui il codice tkinter nel thread UI
+        thread = threading.Thread(target=run_tkinter)
+        thread.start()
+        #prossima_ora = AggiungiOra(entity.to_dict()['energia'][-1]['date'])
+        '''ultima_data = datetime.datetime.strptime(entity.to_dict()['energia'][-1]['date'], '%Y/%m/%d %H:%M:%S')
+        print('entityy -1 date',type(entity.to_dict()['energia'][-1]['date']))
+        #print('tipo di ultima data', type(ultima_data))
+        prossima_ora = ultima_data + timedelta(hours=1)'''
+        print('ora prima del for', entity.to_dict()['energia'][-1]['date'])
+        ora_attuale = entity.to_dict()['energia'][-1]['date']
+        for i in range(7):
+            prossima_ora = AggiungiOra(ora_attuale)
+            date_future.append(prossima_ora)
+            print('prossima ora', prossima_ora)
+            ora_attuale=prossima_ora
+        print('date future dopo for', date_future)
+        date_future = np.array(date_future).reshape(-1,1)
+        print('date future con reshape', date_future)
         # Genera una sequenza di date per le 4 ore successive
-        date_future = np.arange(prossima_ora.toordinal(), prossima_ora.toordinal() + 8).reshape(-1, 1)
-        print('DATE FUTUREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE',date_future)
+        #date_future = np.arange(prossima_ora.toordinal(), prossima_ora.toordinal() + 8).reshape(-1, 1)
+        #print('DATE FUTUREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE',date_future)
+
+
+        doc_ref = db.collection('sensors').document(s+'_prediction')
+        entity_prediction = doc_ref.get()
+        print('new entry inizio', new_entry)
+        try:
+            last_prediction = entity_prediction.to_dict()['prediction']
+            print('last predicrtion', last_prediction)
+        except Exception:
+            last_prediction = 0
+        if last_prediction != 0:
+            print('new entry', new_entry)
+            print('last prediction', last_prediction)
+            scostamento = new_entry - last_prediction[0]
+            print('scostamento', scostamento)
+        # Creazione della finestra principale
+
 
         # Prevedi i consumi per le date future
         consumi_previsti = modello.predict(numeri_futuri)
+        print('consumi previsti',consumi_previsti[0])
+        prima_previsione = consumi_previsti[0]
+        base_url = 'http://localhost'
+        r1 = post(f'{base_url}/sensors/prediction/{s}', data={'prediction': consumi_previsti[0]})
 
         # Stampa dei risultati
         print("--------------------------------Consumi previsti:")
         for dat, consumo in zip(numeri_futuri, consumi_previsti):
-            print(f"Data {dat}: {round(consumo, 2)}")
+            print(f"Data {dat}: {consumo}")
 
         de = []
         de.append(['Number', s])
@@ -283,22 +365,31 @@ def graph_data(s):
             print('y', y)
             print(date_future[y][0])
             #print('y in data', datetime.datetime.fromordinal(date_future[y]))
-            de.append([str(datetime.datetime.fromordinal(date_future[y][0])), consumi_previsti[y]])
+            de.append([date_future[y][0], consumi_previsti[y]])
             #print('x,y', (x['date'], x['val']))
             #print('d', de)
-
-        # Plot dei risultati
-        plt.scatter(array_date, consumi, color='blue', label='Dati storici')
-        plt.plot(numeri_futuri, consumi_previsti, color='red', label='Previsione')
-        plt.xlabel('Data')
-        plt.ylabel('Consumi')
-        plt.title('Previsione dei consumi futuri')
-        plt.legend()
-        plt.show()
-
         return render_template('graph.html',sensor=s,data=json.dumps(di), data2=json.dumps(d1), data3=json.dumps(de))
     else:
         return redirect(url_for('static', filename='sensor404.html'))
+
+@app.route('/sensors/prediction/<s>',methods=['POST'])
+def add_prediction(s):
+    s1 = s+'_prediction'
+    prediction = float(request.values['prediction'])
+    #val = request.values['val']
+    #print('sono in add data date', date)
+    #print('sono in add data val', val)
+    print('sono in add pred', prediction)
+    db = firestore.Client.from_service_account_json('Credentials.json')
+    doc_ref = db.collection('sensors').document(s1)
+    entity = doc_ref.get()
+    #print("Entity: ", entity)
+    documento_ref = db.collection('sensors').document(s1)
+    documento = documento_ref.get()
+    doc_ref.set({'prediction': [prediction]})
+    print('date_val in set: ', prediction)
+
+    return 'ok',200
 
 @app.route('/login', methods=['POST'])
 def login():
