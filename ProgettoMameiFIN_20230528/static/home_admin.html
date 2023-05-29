@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loomens</title>
+
+  <style>
+    body {
+      background-color: #102c54;
+      color: #fff;
+      font-family: "Arial", sans-serif;
+    }
+
+    header {
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin: 0;
+      letter-spacing: 3px;
+    }
+
+    nav {
+      background-color: #9995;
+      padding: 20px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 50px;
+      background-color: #9999;
+    }
+
+    section {
+      margin-bottom: 50px;
+    }
+
+    h2 {
+      font-size: 36px;
+      margin: 0 0 20px 0;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    form label {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    form button {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+    }
+
+    footer {
+      background-color: #9995;
+      text-align: center;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: #222;
+      background-color: #ffffff;
+      padding: 10px;
+      font-size: 16px;
+      text-decoration: none;
+      display: block;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #ccc;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .Logo {
+      border-radius: 20%;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      nav ul li {
+        display: block;
+        margin: 10px 0;
+      }
+
+      .Logo {
+        width: 50%;
+      }
+
+      form input,
+      form textarea {
+        width: 100%;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .Logo {
+        width: 30%;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .Logo {
+        width: 10%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <p></p>
+
+  <a href="/">
+    <img class="Logo" src="/static/images/Logo.png" style="display: block; margin: 0 auto;" alt="logo">
+  </a>
+  <p></p>
+
+  <nav>
+    <ul>
+      <li><a href="/" style="background-color: #333;">Pagina iniziale</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropbtn" style="background-color: #333;">I tuoi dispositivi</a>
+        <div class="dropdown-content">
+          <a href="/graph/frigoriferoJZ">frigoriferoJZ</a>
+          <a href="#">Dispositivo 2</a>
+          <a href="#">Dispositivo 3</a>
+          <a href="#">Dispositivo 4</a>
+          <a href="#">Dispositivo 5</a>
+          <a href="#">Dispositivo 6</a>
+          <a href="#">Dispositivo 7</a>
+        </div>
+      </li>
+      <li><a href="adduser.html" style="background-color: #333;">Add User</a></li>
+      <li><a href="elimina_utente.html" style="background-color: #333;">Remove User</a></li>
+      <li><a href="/logout" style="background-color: #333;">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h2 style="text-align: center">La Nostra Mission</h2>
+      <p>Benvenuti nel nostro sito dedicato al monitoraggio dei consumi energetici e al risparmio. La nostra mission è
+        offrire ai nostri clienti gli strumenti e le informazioni necessarie per prendere il controllo delle proprie
+        spese energetiche e ridurre al minimo gli sprechi.</p>
+      <p>Sappiamo quanto sia importante per voi conoscere e comprendere quanto state spendendo in termini di energia. Il
+        nostro obiettivo è rendere i dati sul consumo energetico accessibili e comprensibili attraverso grafici intuitivi
+        e report dettagliati.</p>
+      <p>Con la nostra piattaforma, potrete visualizzare in tempo reale i vostri consumi energetici, analizzare le
+        tendenze e confrontare i dati con periodi precedenti. Questa trasparenza vi permetterà di identificare le aree
+        in cui potete migliorare l'efficienza energetica e ridurre i costi.</p>
+    </section>
+
+    <section>
+      <div class="centered-image">
+        <img src="images/image_home.jpg" alt="Immagine di servizi" style="display: block; margin: 0 auto; width: 100%">
+      </div>
+    </section>
+
+    <section>
+       <p></p>
+      <h3 style="text-align: left">Chi siamo?
+          <a href="/Contatti">
+            <button type="button" style="background-color: #333; color: #fff; padding: 10px 20px; font-size: 18px; border: none; cursor: pointer; border-radius: 5px;">Contattaci</button>
+          </a>
+        </h3>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2023 Loomens. Tutti i diritti riservati.</p>
+  </footer>
+</body>
+
+</html>
