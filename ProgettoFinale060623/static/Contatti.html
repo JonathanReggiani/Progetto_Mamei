@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loomens</title>
+
+<style>
+body {
+  background-color: #102c54;
+  color: #fff;
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Stile del logo */
+.logo {
+  display: block;
+  margin: 0 auto;
+  max-width: 30%;
+  height: auto;
+  border-radius: 20%;
+}
+
+/* Stile della navigazione */
+nav {
+  background-color: #9995;
+  padding: 20px;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Stile del contenuto principale */
+main {
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 800px;
+  background-color: #9999;
+}
+
+section {
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 36px;
+  margin: 0 0 20px 0;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* Stile del dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: #222;
+  background-color: #ffffff;
+  padding: 10px;
+  font-size: 16px;
+  text-decoration: none;
+  display: block;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #ccc;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+</style>
+</head>
+
+<body>
+<p></p>
+
+<a href="/">
+  <img class="logo" src="/static/images/Logo.png" alt="logo">
+</a>
+<p></p>
+
+<nav>
+  <ul>
+    <li><a href="/" style="background-color: #333;">Pagina Iniziale</a></li>
+    <li class="dropdown">
+      <a href="#" class="dropbtn" style="background-color: #333;">I tuoi dispositivi</a>
+      <div class="dropdown-content">
+        <a href="/graph/frigoriferoJZ">frigoriferoJZ</a>
+        <a href="/graph/frigoriferoFM">frigoriferoFM</a>
+        <a href="/graph/macchinetta_caffeJZ">macchinettaJZ</a>
+        <a href="/graph/macchinetta_caffeFM">macchinettaFM</a>
+        <a href="/graph/TV_JZ">TelevisoreJZ</a>
+        <a href="/graph/TV_FM">TelevisoreFM</a>
+      </div>
+    </li>
+    <li><a href="/home_utente" style="background-color: #333;">User</a></li>
+    <li><a href="/home_admin" style="background-color: #333;">Admin</a></li>
+    <li><a href="/logout" style="background-color: #333;">Logout</a></li>
+  </ul>
+</nav>
+
+<main>
+  <section>
+    <h2 style="text-align: center">Chi Siamo</h2>
+    <p>L'obiettivo di questa pagina è quello di poterci conoscere e lasciarvi i nostri recapiti per contattarci quando preferite!</p>
+    <p></p>
+  </section>
+
+  <h2 style="text-align: center">Gaia Forte</h2>
+  <p></p>
+  <section>
+    <div class="centered-image">
+      <img src="images/Gaia.png" alt="Immagine di servizi" style="display: block; margin: 0 auto; width: 50%">
+    </div>
+    <p style="text-align: center">Email: 257883@studenti.unimore.it</p>
+    <p style="text-align: center">Matricola: 168636</p>
+  </section>
+
+  <h2 style="text-align: center">Francesco Mindoli</h2>
+  <p></p>
+  <section>
+    <div class="centered-image">
+      <img src="images/Fra.JPG" alt="Immagine di servizi" style="display: block; margin: 0 auto; width: 50%">
+    </div>
+    <p style="text-align: center">Email: 255929@studenti.unimore.it</p>
+    <p style="text-align: center">Matricola: 170095</p>
+  </section>
+
+  <h2 style="text-align: center">Daniela Ravelli</h2>
+  <p></p>
+  <section>
+    <div class="centered-image">
+      <img src="images/Dani.jpg" alt="Immagine di servizi" style="display: block; margin: 0 auto; width: 50%">
+    </div>
+    <p style="text-align: center">Email: 256585@studenti.unimore.it</p>
+    <p style="text-align: center">Matricola: 172569</p>
+  </section>
+
+  <h2 style="text-align: center">Jonathan Reggiani</h2>
+  <p></p>
+  <section>
+    <div class="centered-image">
+      <img src="images/Jonny.JPG" alt="Immagine di servizi" style="display: block; margin: 0 auto; width: 50%">
+    </div>
+    <p style="text-align: center">Email: 256585@studenti.unimore.it</p>
+    <p style="text-align: center">Matricola: 172882</p>
+  </section>
+
+  <h2 style="text-align: center">Jacopo Zagnoni</h2>
+  <p></p>
+  <section>
+    <div class="centered-image">
+      <img src="images/Jaco.jpeg" alt="Immagine di servizi" style="display: block; margin: 0 auto; width: 50%">
+    </div>
+    <p style="text-align: center">Email: 260686@studenti.unimore.it</p>
+    <p style="text-align: center">Matricola: 172363</p>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2023 Loomens. Tutti i diritti riservati.</p>
+</footer>
+
+</body>
+</html>
