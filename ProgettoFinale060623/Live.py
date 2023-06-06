@@ -29,21 +29,16 @@ while(run):
     count += 1
     #The P110 has all the same basic functions as the plugs and additionally allow for energy monitoring.
     r = p110.getEnergyUsage() #Returns dict with all of the energy usage of the connected plug
-    print(r)
     date = r['result']['local_time']
     today_energy = r['result']['today_energy']
     energy_list.append(today_energy)
     hour = date.split(" ")[1][:2]
-    print("hour: ", hour)
     if(hour=='00'): #se lo facciamo al minuto, deve essere 00 anche il minuto
         count=1
     if(count>1):
-        print("Count: ", count)
         last_energy = energy_list[count-1] - energy_list[count-2]
-        print('Last_energy:', last_energy)
         date = date.replace('-','/')
         toFirestore = str(date) + ',' + str(last_energy)
-        print("toFirestore: ", toFirestore)
         #dati firestore
         print(sensor, 'invio...')
         infot = mqtt_client.publish(f'ProgettoMameiIoT/energia/sensor/{sensor}', f'val={toFirestore}')
