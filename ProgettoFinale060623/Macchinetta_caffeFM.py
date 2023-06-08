@@ -3,8 +3,8 @@ import paho.mqtt.client as mqtt
 import time
 
 #Variabili da impostare
-filePath = "C:\\Users\\Francesco Mindoli\PycharmProjects\ProgettoFinale"#!!!! to modify
-#filePath = "C:\\Users\\Jonathan\Desktop\Csv"
+#filePath = "C:\\Users\\Francesco Mindoli\PycharmProjects\ProgettoFinale"#!!!! to modify
+filePath = "C:\\Users\\Jonathan\Desktop\Csv"
 xlsEnergia = "MacchinettaCaffe_EnergiaFM.xls"
 csvEnergia = filePath + "\MacchinettaCaffe_EnergiaFM.csv"
 defaultTopicE = "/sensor/energia"

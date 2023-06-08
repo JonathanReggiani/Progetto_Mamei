@@ -169,21 +169,21 @@ def graph_data(s):
         #y i valori
         for x in entity.to_dict()['energia']:
             di.append([x['date'], x['val']])
-            new_entry = x['val']
-            new_date = x['date']
+            #new_entry = x['val']
+            #new_date = x['date']
         #grafico delle fasce di consumo
-        F1 = 0
-        F2 = 0
-        F3 = 0
+        #F1 = 0
+        #F2 = 0
+        #F3 = 0
         date_fasce = []
         d1 = []
         d1.append(['Giorno', 'F1', 'F2', 'F3'])
-        giorno = ''
+        #giorno = ''
         for x in entity.to_dict()['energia']:
             giorno = x['date'].split(" ")[0]
             if giorno not in date_fasce:
                 date_fasce.append(giorno)
-        giorno = ''
+        #giorno = ''
         for data_for in date_fasce:
             F1 = 0
             F2 = 0
@@ -227,7 +227,7 @@ def graph_data(s):
         modello.fit(array_date, consumi)
         # Determina l'ultima data presente nel dataset
         ultimo_numero = m
-        ultima_data = entity.to_dict()['energia'][ultimo_numero]['date']
+        #ultima_data = entity.to_dict()['energia'][ultimo_numero]['date']
         # Genera una sequenza di date per le 4 ore successive
         numeri_futuri = np.arange(ultimo_numero+1, ultimo_numero+9).reshape(-1, 1)
 

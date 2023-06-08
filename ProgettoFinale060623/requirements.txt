@@ -6,5 +6,3 @@ flask-login
 numpy
 sklearn
 matplotlib
-tkinter
-tk
