@@ -27,36 +27,27 @@ def on_message(client, userdata, message):
 
 def remove_dup (collezione, documento_id, campo_da_modificare, date_check):
     db = firestore.Client.from_service_account_json('Credentials.json')
-    # Specifica il percorso del documento e l'ID del documento
     collezione = collezione
     documento_id = documento_id
-    # Specifica il campo da modificare
     campo_da_modificare = campo_da_modificare
-    # Recupera il riferimento al documento
     documento_ref = db.collection(collezione).document(documento_id)
     valore_da_elim = ''
-    # Recupera il documento
     documento = documento_ref.get()
     if documento.exists:
         dati_documento = documento.to_dict()
-        # Verifica se il campo da modificare esiste nel documento
         if campo_da_modificare in dati_documento:
             campo = dati_documento[campo_da_modificare]
             valore = documento.get(campo_da_modificare)
             for i in valore:
                 if i['date'] == str(date_check):
                     valore_da_elim = i
-                    # Verifica se il campo è di tipo array o mappa
                     if isinstance(campo, list):
-                        # Elimina il valore dall'array
                         campo.remove(valore_da_elim)
                     elif isinstance(campo, dict):
-                        # Elimina il valore dalla mappa
                         campo.pop(valore_da_elim, None)
                     else:
                         print("Il campo specificato non è di tipo array o mappa.")
                         exit()
-            # Aggiorna il campo nel documento
             documento_ref.update({campo_da_modificare: campo})
             if valore_da_elim == '':
                 return ''
@@ -96,6 +87,7 @@ login = LoginManager(app)
 login.login_view = '/static/login.html'
 
 @login.user_loader
+#usata nell'applicazione Flask per consentire ai singoli utenti di accedere al loro account
 def load_user(username):
     db = firestore.Client.from_service_account_json('Credentials.json')
     user = db.collection('utenti').document(username).get()
@@ -116,7 +108,7 @@ def add_prediction(s):
     documento_ref = db.collection('sensors').document(s1)
     documento = documento_ref.get()
     if entity_pred.exists and 'prediction' in entity_pred.to_dict():
-        # se frigorigero_pred esiste e se ha una colonna prediction
+        #se frigorigero_pred esiste e se ha una colonna prediction
         d_pred = entity_pred.to_dict()['prediction']
         valore_da_rimuovere = remove_dup('sensors', s1, 'prediction', data_prev)
         if valore_da_rimuovere != '' and valore_da_rimuovere in d_pred:
@@ -124,7 +116,7 @@ def add_prediction(s):
         d_pred.append(date_pred)
         doc_ref.update({'prediction': d_pred})
     else:
-        # se frigorigero_pred non esiste, aggiungi tutto
+        #se frigorigero_pred non esiste, aggiungi tutto
         print('Sono in SET')
         doc_ref.set({'prediction': [date_pred]})
         print('date_val in set: ', date_pred)
@@ -143,8 +135,8 @@ def add_data(s):
     documento_ref = db.collection('sensors').document(s)
     documento = documento_ref.get()
     if entity.exists and 'energia' in entity.to_dict():
-        # se frigorigero esiste e se ha una colonna data
-        # se esiste una data, me la sovrascrivi con l'ultimo valore
+        #se frigorigero esiste e se ha una colonna energia
+        #se esiste una data, me la sovrascrivi con l'ultimo valore
         d = entity.to_dict()['energia']
         valore_da_rimuovere = remove_dup('sensors', s, 'energia', date)
         if valore_da_rimuovere != '' and valore_da_rimuovere in d:
@@ -162,7 +154,7 @@ def graph_data(s):
     db = firestore.Client.from_service_account_json('Credentials.json')
     entity = db.collection('sensors').document(s).get()
     if entity.exists:
-        # grafico consumi orari
+        #grafico consumi orari
         di = []
         di.append(['Number','Serie Storica'])
         #x la data
@@ -171,6 +163,7 @@ def graph_data(s):
             di.append([x['date'], x['val']])
             #new_entry = x['val']
             #new_date = x['date']
+
         #grafico delle fasce di consumo
         #F1 = 0
         #F2 = 0
@@ -221,24 +214,21 @@ def graph_data(s):
 
         array_date = np.array(array_date).reshape(-1, 1)
         consumi = np.array(consumi)
-        # Creazione del modello di regressione lineare
+        #Creazione del modello di regressione lineare
         modello = LinearRegression()
-        # Addestramento del modello
+        #Addestramento del modello
         modello.fit(array_date, consumi)
-        # Determina l'ultima data presente nel dataset
+        #Determina l'ultima data presente nel dataset
         ultimo_numero = m
         #ultima_data = entity.to_dict()['energia'][ultimo_numero]['date']
-        # Genera una sequenza di date per le 4 ore successive
+        #genera i valori del consumi per le 8 ore successive
         numeri_futuri = np.arange(ultimo_numero+1, ultimo_numero+9).reshape(-1, 1)
 
         #calcolo delle 8 ore successive di cui prevedere il consumo
         def AggiungiOra(data):
             formato_data = "%Y/%m/%d %H:%M:%S"
-            # Converti la stringa di data in un oggetto datetime
             data_datetime = datetime.datetime.strptime(data, formato_data)
-            # Aggiungi un'ora all'oggetto datetime
             data_avanti = data_datetime + datetime.timedelta(hours=1)
-            # Converti l'oggetto datetime risultante in una stringa nel formato desiderato
             data_avanti_stringa = data_avanti.strftime(formato_data)
             return data_avanti_stringa
 
@@ -253,12 +243,12 @@ def graph_data(s):
         entity_prediction = doc_ref.get()
         base_url = 'http://localhost'
 
-        # Prevedi i consumi per le date future
+        #Prevedi i consumi per le date future
         consumi_previsti = modello.predict(numeri_futuri)
         prima_previsione = consumi_previsti[0]
         r1 = post(f'{base_url}/sensors/prediction/{s}', data={'data_prev':date_future[0],'prediction': consumi_previsti[0]})
 
-        # Stampa dei risultati
+        #Stampa dei risultati
         for dat, consumo in zip(numeri_futuri, consumi_previsti):
             print(f"Data {dat}: {consumo}")
 
@@ -342,6 +332,7 @@ def logout():
     return redirect('/')
 
 @app.route('/elimina_utente', methods=['POST'])
+@login_required
 def eliminautente():
     if current_user.username == 'gaia':
         username = request.values['u']

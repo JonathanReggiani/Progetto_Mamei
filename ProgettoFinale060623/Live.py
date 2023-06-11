@@ -27,9 +27,9 @@ count=0
 energy_list = []
 while(run):
     count += 1
-    #The P110 has all the same basic functions as the plugs and additionally allow for energy monitoring.
     r = p110.getEnergyUsage() #Returns dict with all of the energy usage of the connected plug
     print(r)
+    #{'result': {'today_runtime': 91, 'month_runtime': 91, 'today_energy': 62, 'month_energy': 62, 'local_time': '2023-06-11 16:13:32', 'electricity_charge': [0, 0, 0], 'current_power': 41461}, 'error_code': 0}
     date = r['result']['local_time']
     today_energy = r['result']['today_energy']/1000 #da W a KW
     energy_list.append(today_energy)
@@ -47,4 +47,4 @@ while(run):
         infot = mqtt_client.publish(f'ProgettoMameiIoT/energia/sensor/{sensor}', f'val={toFirestore}')
         infot.wait_for_publish()
         #inviamo i dati una volta all'ora
-    time.sleep(5)
+    time.sleep(3600)

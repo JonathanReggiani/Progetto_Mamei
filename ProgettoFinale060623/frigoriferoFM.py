@@ -8,7 +8,6 @@ filePath = "C:\\Users\\Jonathan\Desktop\Csv"
 xlsEnergia = "Frigorifero_EnergiaFM.xls"
 csvEnergia = filePath + "\Frigorifero_EnergiaFM.csv"
 defaultTopicE = "/sensor/energia"
-defaultTopicP = "/sensor/potenza"
 broker_ip = "broker.emqx.io"
 portaMosquito = 1883 #porta specifica nel localhost da cui si lancia il codice
 sensor = 'frigoriferoFM'
@@ -38,10 +37,10 @@ with open(csvEnergia) as f:
     for line in f:
         if(c>0):
             for i in range(2):
-                #print(sensor, 'invio...', i)
+                print(sensor, 'invio...', i)
                 infot = mqtt_client.publish(f'ProgettoMameiIoT/energia/sensor/{sensor}', f'val={line.strip()}')
                 infot.wait_for_publish()
-                #print('Message Sent: ' + line.strip())
+                print('Message Sent: ' + line.strip())
                 if i == 1:
                     time.sleep(30)
                 else:

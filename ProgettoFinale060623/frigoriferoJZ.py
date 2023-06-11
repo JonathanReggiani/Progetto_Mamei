@@ -8,7 +8,6 @@ filePath = "C:\\Users\\Jonathan\Desktop\Csv"
 xlsEnergia = "Frigorifero_EnergiaJZ.xls"
 csvEnergia = filePath + "\Frigorifero_EnergiaJZ.csv"
 defaultTopicE = "/sensor/energia"
-defaultTopicP = "/sensor/potenza"
 broker_ip = "broker.emqx.io"
 portaMosquito = 1883 #porta specifica nel localhost da cui si lancia il codice
 sensor = 'frigoriferoJZ'
